@@ -1,8 +1,16 @@
 import PyPDF4
 import io
 import csv
+import sys
 
-with open(r'CMPT 072021 AP 082021.PDF', 'rb') as pdfFileObj:
+params = sys.argv
+
+if(len(params) < 2):
+  file = str(input("Insira o caminho do arquivo a ser processado: "))
+else:
+  file = params[1]
+  
+with open(r'{}'.format(file), 'rb') as pdfFileObj:
 
   pdfReader = PyPDF4.PdfFileReader(pdfFileObj)
 
@@ -33,12 +41,12 @@ with open(r'CMPT 072021 AP 082021.PDF', 'rb') as pdfFileObj:
 
       for line in io.StringIO(pagesText):
         if(targetString in line):
-          print("Target {} found! Prepare to save data".format(targetString))
+          #print("Alvo {} encontrado! Preparando para salvar dados".format(targetString))
           saveData = True
           continue
 
-        if (key == "PROC" or key == "ESPEC") and cont == 1:
-          print(saveData, jumpLines)
+        #if (key == "PROC" or key == "ESPEC") and cont == 1:
+          #print(saveData, jumpLines)
 
         if(saveData and jumpLines == 0):
           data[cont][key] = line.replace("\n", "")
@@ -48,15 +56,18 @@ with open(r'CMPT 072021 AP 082021.PDF', 'rb') as pdfFileObj:
         if(saveData and jumpLines > 0):
           jumpLines -= 1
 
+    print(">> Pagina {} foi processada".format(cont))
   filter(None, data)
 
   with open("resultados.csv", "w") as output:
     example = data[0]
-    print(example.keys())
+    #print(example.keys())
     handler = csv.DictWriter(output, example.keys())
     output.write("PAGINA, AIH, PROCEDIMENTO PRINCIPAL, TIPO, ESPECIALIDADE\n")
     for line in data:
       if not line:
         continue
       handler.writerow(line)
+
+print("------- # Arquivo {} foi processado # -------".format(file))
     
