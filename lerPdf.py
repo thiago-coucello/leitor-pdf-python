@@ -2,7 +2,7 @@ import PyPDF4
 import io
 import csv
 
-with open(r'CMPT 072021.PDF', 'rb') as pdfFileObj:
+with open(r'CMPT 072021 AP 082021.PDF', 'rb') as pdfFileObj:
 
   pdfReader = PyPDF4.PdfFileReader(pdfFileObj)
 
@@ -33,6 +33,7 @@ with open(r'CMPT 072021.PDF', 'rb') as pdfFileObj:
 
       for line in io.StringIO(pagesText):
         if(targetString in line):
+          print("Target {} found! Prepare to save data".format(targetString))
           saveData = True
           continue
 
